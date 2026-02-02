@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CrashAid Live Map - Emoji Version</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+    #map { height: 100vh; width: 100%; }
+    body { margin:0; padding:0; font-family: Arial; }
+    .emoji-marker { font-size: 24px; text-align:center; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<script>
+// Initialize map
+var map = L.map('map').setView([20.5937, 78.9629], 5);
+
+// Tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+// ---------- Emoji Icons ----------
+function emojiIcon(emoji){
+    return L.divIcon({className:'emoji-marker', html:emoji, iconSize:[30,30], iconAnchor:[15,15]});
+}
+
+// ---------- Fetch hospitals ----------
+var hospitals = [];
+var ambulances = [];
+
+fetch('/hospitalapp/api/hospital/')
+.then(res => res.json())
+.then(data => {
+    hospitals = data;
+    hospitals.forEach(h => {
+        // Hospital emoji
+        L.marker([h.latitude, h.longitude], {icon:emojiIcon('🏥')})
+         .addTo(map)
+         .bindPopup(`<b>${h.name}</b><br>${h.location}`);
+
+        // Ambulance emoji at hospital
+        let amb = L.marker([h.latitude, h.longitude], {icon:emojiIcon('🚑')})
+                    .addTo(map)
+                    .bindPopup(`Ambulance at ${h.name}`);
+        ambulances.push({marker: amb, hospital: h, busy: false});
+    });
+});
+
+// ---------- Fetch accidents ----------
+var accidents = [];
+fetch('/accidentapp/api/accident/')
+.then(res => res.json())
+.then(data => {
+    accidents = data;
+
+    accidents.forEach(a => {
+        // Accident severity emoji (optional: color)
+        let emoji = "🚨"; // Default
+        switch(a.severity){
+            case "Medium": emoji = "🟠"; break;
+            case "High": emoji = "🔴"; break;
+            case "Critical": emoji = "🛑"; break;
+        }
+
+        L.marker([a.latitude, a.longitude], {icon:emojiIcon(emoji)})
+         .addTo(map)
+         .bindPopup(`<b>${a.location}</b><br>Severity: ${a.severity}`);
+    });
+
+    // Fit map to show all points
+    var allLatLng = hospitals.map(h => [h.latitude, h.longitude])
+                    .concat(accidents.map(a => [a.latitude, a.longitude]));
+    if(allLatLng.length>0) map.fitBounds(allLatLng);
+
+    // Start ambulance movement
+    dispatchAmbulances();
+});
+
+// ---------- Move Ambulance ----------
+function moveMarker(marker, start, end, duration=5000){
+    return new Promise(resolve => {
+        let steps = 100;
+        let i = 0;
+        let lat = start[0], lng = start[1];
+        let deltaLat = (end[0]-start[0])/steps;
+        let deltaLng = (end[1]-start[1])/steps;
+
+        let interval = setInterval(() => {
+            if(i>=steps){ clearInterval(interval); resolve(); return; }
+            lat += deltaLat; lng += deltaLng;
+            marker.setLatLng([lat,lng]);
+            i++;
+        }, duration/steps);
+    });
+}
+
+// ---------- Dispatch nearest ambulance ----------
+async function dispatchAmbulances(){
+    for(let acc of accidents){
+        let nearestAmb = null;
+        let minDist = Number.MAX_VALUE;
+
+        ambulances.forEach(a => {
+            if(!a.busy){
+                let d = Math.hypot(acc.latitude-a.hospital.latitude, acc.longitude-a.hospital.longitude);
+                if(d<minDist){ minDist=d; nearestAmb=a; }
+            }
+        });
+
+        if(nearestAmb){
+            nearestAmb.busy = true;
+            let start = [nearestAmb.hospital.latitude, nearestAmb.hospital.longitude];
+            let end = [acc.latitude, acc.longitude];
+            await moveMarker(nearestAmb.marker, start, end, 5000); // Go to accident
+            await new Promise(r => setTimeout(r,1000)); // Wait 1s at accident
+            await moveMarker(nearestAmb.marker, end, start, 5000); // Return to hospital
+            nearestAmb.busy = false;
+        }
+    }
+}
+</script>
+</body>
+</html>

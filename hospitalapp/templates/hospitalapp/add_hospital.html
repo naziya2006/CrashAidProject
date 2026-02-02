@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CrashAid | Add Hospital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#ff9a9e,#fad0c4);min-height:100vh;}
+        .navbar{background:linear-gradient(90deg,#6a11cb,#2575fc);box-shadow:0 4px 15px rgba(0,0,0,0.2);}
+        .navbar-brand{color:#fff !important;font-weight:700;}
+        .header-box{text-align:center;margin:40px 0;color:#fff;}
+        .form-card{background:#fff;border-radius:30px;padding:50px 40px;box-shadow:0 15px 30px rgba(0,0,0,0.1);transition:0.3s;}
+        .form-card:hover{transform:translateY(-8px);box-shadow:0 25px 50px rgba(0,0,0,0.15);}
+        input,textarea{border-radius:12px;border:1px solid #bbb;padding:12px;transition:0.3s;}
+        input:focus,textarea:focus{border-color:#6a11cb;box-shadow:0 0 12px rgba(106,17,203,0.3);outline:none;}
+        .btn-submit{background:linear-gradient(90deg,#fc00ff,#00dbde);border:none;color:#fff;font-weight:600;border-radius:25px;padding:12px 30px;transition:0.3s;}
+        .btn-submit:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(252,0,255,0.3);}
+        .success-msg{display:{% if success %}block{% else %}none{% endif %};text-align:center;margin-bottom:15px;padding:10px;border-radius:12px;background:#28a745;color:#fff;font-weight:600;}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="/hospitalapp/">🏥 CrashAid</a>
+    </div>
+</nav>
+<div class="container mt-5">
+    <div class="header-box">
+        <h2>➕ Add New Hospital</h2>
+        <p>Fill in hospital details to register</p>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="form-card">
+                <div class="success-msg">Hospital added successfully!</div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name">Hospital Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Hospital Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address">Address</label>
+                        <textarea class="form-control" id="address" name="address" rows="3" placeholder="Hospital Address"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="latitude">Latitude</label>
+                        <input type="number" step="any" class="form-control" id="latitude" name="latitude">
+                    </div>
+                    <div class="mb-3">
+                        <label for="longitude">Longitude</label>
+                        <input type="number" step="any" class="form-control" id="longitude" name="longitude">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone">Phone</label>
+                        <input type="text" class="form-control" id="phone" name="phone">
+                    </div>
+                    <button type="submit" class="btn btn-submit w-100">Add Hospital</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

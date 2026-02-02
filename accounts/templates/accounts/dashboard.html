@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CrashAid Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body.dashboard-page {
+            background: linear-gradient(120deg, #00c6ff, #0072ff);
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            padding-top: 30px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .dashboard-header h2 {
+            font-weight: 700;
+            font-size: 34px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+        }
+
+        /* Summary Cards */
+        .card-summary {
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+        .card-summary:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        }
+        .card-summary h3 {
+            font-size: 30px;
+            font-weight: 700;
+        }
+        .card-summary p {
+            font-size: 16px;
+        }
+        .bg-total { background: linear-gradient(135deg, #ff6a00, #ee0979); }
+        .bg-pending { background: linear-gradient(135deg, #f7971e, #ffd200); }
+        .bg-handled { background: linear-gradient(135deg, #11998e, #38ef7d); }
+
+        /* Table */
+        .table-container {
+            margin-top: 40px;
+            background: rgba(255,255,255,0.95);
+            color: #212529;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .badge-severity {
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .badge-high { background: #dc3545; color: #fff; }
+        .badge-medium { background: #ffc107; color: #212529; }
+        .badge-low { background: #28a745; color: #fff; }
+        .table-hover tbody tr:hover { background-color: rgba(220,53,69,0.1); transition: 0.3s; }
+
+        /* Animated floating icons */
+        .icon-float {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.2;
+            animation: floatIcon 25s linear infinite;
+        }
+        @keyframes floatIcon {
+            0% { transform: translateY(100vh) rotate(0deg);}
+            100% { transform: translateY(-10vh) rotate(360deg);}
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+
+<!-- Floating Icons -->
+<i class="bi bi-exclamation-triangle-fill icon-float" style="left:10%; animation-duration:28s;"></i>
+<i class="bi bi-people-fill icon-float" style="left:50%; animation-duration:25s;"></i>
+<i class="bi bi-geo-alt-fill icon-float" style="left:80%; animation-duration:30s;"></i>
+
+<div class="container">
+    <div class="dashboard-header">
+        <h2><i class="bi bi-speedometer2"></i> CrashAid Dashboard</h2>
+        <p>Hospital ID: {{ hospital_id }}</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card-summary bg-total text-center">
+                <h3><i class="bi bi-exclamation-triangle-fill"></i> {{ total_accidents }}</h3>
+                <p>Total Accidents</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-summary bg-pending text-center">
+                <h3><i class="bi bi-clock-fill"></i> {{ pending_accidents }}</h3>
+                <p>Pending Accidents</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-summary bg-handled text-center">
+                <h3><i class="bi bi-check-circle-fill"></i> {{ handled_accidents }}</h3>
+                <p>Handled Accidents</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accidents Table -->
+    <div class="table-container mt-5">
+        <h4>Recent Accidents</h4>
+        <table class="table table-hover mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Location</th>
+                    <th>Severity</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for accident in accidents %}
+                <tr>
+                    <td>{{ accident.id }}</td>
+                    <td>{{ accident.location }}</td>
+                    <td>
+                        {% if accident.severity == 'High' %}
+                        <span class="badge-severity badge-high">High</span>
+                        {% elif accident.severity == 'Medium' %}
+                        <span class="badge-severity badge-medium">Medium</span>
+                        {% else %}
+                        <span class="badge-severity badge-low">Low</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ accident.time }}</td>
+                    <td>{{ accident.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No accidents found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

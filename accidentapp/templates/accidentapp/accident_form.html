@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Accident</title>
+</head>
+<body>
+    <h1>Add Accident</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Accident</button>
+    </form>
+
+    <br>
+    <a href="{% url 'accident_list' %}">Back to list</a>
+</body>
+</html>
+

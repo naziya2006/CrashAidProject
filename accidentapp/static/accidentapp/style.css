@@ -1,0 +1,154 @@
+/* ------------------------
+   General Body & Fonts
+------------------------ */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    color: #222;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ------------------------
+   Buttons & Links
+------------------------ */
+button, .btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover, .btn:hover {
+    background-color: #0056b3;
+}
+
+/* ------------------------
+   Forms
+------------------------ */
+form {
+    width: 80%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+input[type="text"], input[type="number"], input[type="datetime-local"], select, textarea {
+    width: 100%;
+    padding: 8px 10px;
+    margin: 8px 0 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+label {
+    font-weight: bold;
+}
+
+/* ------------------------
+   Accident List
+------------------------ */
+ul.accident-list {
+    list-style: none;
+    padding: 0;
+    width: 80%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+ul.accident-list li {
+    background: #fff;
+    margin: 10px 0;
+    padding: 15px;
+    border-left: 5px solid #007bff;
+    border-radius: 5px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+}
+
+ul.accident-list li .severity-High {
+    color: red;
+    font-weight: bold;
+}
+
+ul.accident-list li .severity-Medium {
+    color: orange;
+    font-weight: bold;
+}
+
+ul.accident-list li .severity-Low {
+    color: green;
+    font-weight: bold;
+}
+
+ul.accident-list li .time, ul.accident-list li .hospital, ul.accident-list li .description {
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+/* ------------------------
+   Map
+------------------------ */
+#map {
+    width: 100%;
+    height: 90vh;
+    margin: 0 auto;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+}
+
+/* ------------------------
+   Popup & Legend
+------------------------ */
+.leaflet-popup-content {
+    font-size: 14px;
+}
+
+.legend {
+    background: white;
+    padding: 10px;
+    line-height: 1.5em;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.legend span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+}
+
+.severity-Low { background: green; }
+.severity-Medium { background: orange; }
+.severity-High { background: red; }
+
+/* ------------------------
+   Responsive
+------------------------ */
+@media (max-width: 600px) {
+    form, ul.accident-list {
+        width: 95%;
+    }
+}

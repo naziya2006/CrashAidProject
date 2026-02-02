@@ -1,0 +1,18 @@
+[
+    {
+        "location": "Junction A",
+        "latitude": 19.076,
+        "longitude": 72.8777,
+        "timestamp": "2025-11-17T14:23:00",
+        "severity": "High",
+        "description": "Minor collision"
+    },
+    {
+        "location": "Junction B",
+        "latitude": 18.5204,
+        "longitude": 73.8567,
+        "timestamp": "2025-11-17T14:25:30",
+        "severity": "Medium",
+        "description": "Vehicle skid"
+    }
+]

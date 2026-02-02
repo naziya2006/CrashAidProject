@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CrashAid | Test Map</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+
+<!-- Leaflet Awesome Markers -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.5/leaflet.awesome-markers.css"/>
+
+<style>
+    #map { height: 95vh; width: 100%; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Leaflet Awesome Markers JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.5/leaflet.awesome-markers.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    /* ---------------- MAP SETUP ---------------- */
+    var map = L.map('map').setView([20.5937, 78.9629], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    /* ---------------- ICONS ---------------- */
+    const hospitalIcon = L.AwesomeMarkers.icon({
+        icon: 'hospital',
+        prefix: 'fa',
+        markerColor: 'red',
+        iconColor: 'white'
+    });
+
+    const ambulanceIcon = L.AwesomeMarkers.icon({
+        icon: 'ambulance',
+        prefix: 'fa',
+        markerColor: 'blue',
+        iconColor: 'white'
+    });
+
+    /* ---------------- DIRECT TEST DATA ---------------- */
+    let hospitals = [
+        {"id":1,"name":"City Hospital","latitude":19.054999,"longitude":72.8692035},
+        {"id":2,"name":"Pune Hospital","latitude":18.5204,"longitude":73.8567}
+    ];
+
+    let accidents = [
+        {"id":1,"location":"Pune Highway","severity":"Medium","latitude":18.5730615,"longitude":73.8367548},
+        {"id":2,"location":"Mumbai Road","severity":"Low","latitude":19.0760,"longitude":72.8777},
+        {"id":3,"location":"Delhi Expressway","severity":"High","latitude":28.8810761,"longitude":77.2387493}
+    ];
+
+    function severityColor(sev){
+        if(sev.toLowerCase()==="low") return "green";
+        if(sev.toLowerCase()==="medium") return "orange";
+        return "red";
+    }
+
+    /* ---------------- ADD HOSPITAL MARKERS ---------------- */
+    hospitals.forEach(h=>{
+        L.marker([h.latitude,h.longitude], {icon:hospitalIcon})
+         .addTo(map)
+         .bindPopup(`<b>${h.name}</b>`);
+    });
+
+    /* ---------------- ADD ACCIDENT MARKERS ---------------- */
+    accidents.forEach(acc=>{
+        L.circleMarker([acc.latitude,acc.longitude], {
+            radius:9,
+            color: severityColor(acc.severity),
+            fillOpacity:0.9,
+            weight:2
+        }).addTo(map)
+          .bindPopup(`<b>${acc.location}</b><br>Severity: ${acc.severity}`);
+    });
+
+});
+</script>
+</body>
+</html>
