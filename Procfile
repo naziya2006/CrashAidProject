@@ -1,1 +1,1 @@
-web: gunicorn crashaid.wsgi:application
+web: gunicorn crashaid.wsgi
