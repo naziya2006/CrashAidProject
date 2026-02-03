@@ -1,25 +1,17 @@
 import firebase_admin
 from firebase_admin import credentials, messaging
+import os
 
-# Firebase init (sirf ek baar)
-if not firebase_admin._apps:
-    cred = credentials.Certificate("firebase_key.json")
-    firebase_admin.initialize_app(cred)
+# Use Render secret path
+FIREBASE_KEY_PATH = "/etc/secrets/serviceAccountKey.json"
 
-# alerts/firebase.py
+cred = credentials.Certificate(FIREBASE_KEY_PATH)
+firebase_admin.initialize_app(cred)
 
 def send_firebase_alert(title, body, tokens):
-    """
-    Dummy Firebase alert for demo purpose.
-    Always returns success, no real notification sent.
-    """
-    if not tokens:
-        return "No tokens provided"
-
-    # Print demo info
-    print(f"Demo Alert Sent! Title: {title}, Body: {body}, Tokens: {tokens}")
-
-    # Return dummy success response
-    class DummyResponse:
-        success_count = len(tokens)
-    return DummyResponse()
+    message = messaging.MulticastMessage(
+        notification=messaging.Notification(title=title, body=body),
+        tokens=tokens,
+    )
+    response = messaging.send_multicast(message)
+    return response.success_count
