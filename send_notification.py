@@ -1,9 +1,12 @@
 import firebase_admin
 from firebase_admin import credentials, messaging
+import os
 
 # Initialize Firebase only once
 if not firebase_admin._apps:
-    cred = credentials.Certificate("serviceAccountKey.json")
+    # Use Render secret file path
+    cred_path = "/etc/secrets/serviceAccountKey.json"
+    cred = credentials.Certificate(cred_path)
     firebase_admin.initialize_app(cred)
 
 def send_accident_alert(title, message, registration_ids):
@@ -15,7 +18,7 @@ def send_accident_alert(title, message, registration_ids):
         tokens=registration_ids
     )
     try:
-        response = messaging.send_each_for_multicast(message_obj)
+        response = messaging.send_multicast(message_obj)
         print(
             f"Successfully sent message: "
             f"{response.success_count} sent, {response.failure_count} failed"
@@ -30,7 +33,7 @@ def send_accident_alert(title, message, registration_ids):
         print("Error sending message:", e)
 
 
-# Replace with actual FCM tokens
+# Example usage (replace with actual FCM tokens)
 registration_ids = [
     "YOUR_DEVICE_FCM_TOKEN_HERE"
 ]
